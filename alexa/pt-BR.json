@@ -1,0 +1,192 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "amigo",
+      "intents": [
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": ["ajuda"]
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": ["para", "encerra a conversa"]
+        },
+        {
+          "name": "AMAZON.NavigateHomeIntent",
+          "samples": []
+        },
+        {
+          "name": "UtteranceIntent",
+          "slots": [
+            {
+              "name": "text",
+              "type": "catchAll"
+            }
+          ],
+          "samples": ["{text}"]
+        },
+        {
+          "name": "ContinueIntent",
+          "samples": ["continue", "prossiga"]
+        }
+      ],
+      "types": [
+        {
+          "name": "catchAll",
+          "values": [
+            {
+              "name": {
+                "value": "olá mundo, bom dia, boa tarde, boa noite"
+              }
+            },
+            {
+              "name": {
+                "value": "Olá, como vai?"
+              }
+            },
+            {
+              "name": {
+                "value": "O que você está fazendo?"
+              }
+            },
+            {
+              "name": {
+                "value": "Tudo bem?"
+              }
+            },
+            {
+              "name": {
+                "value": "Olá, como vai?"
+              }
+            },
+            {
+              "name": {
+                "value": "Qual é o seu nome?"
+              }
+            },
+            {
+              "name": {
+                "value": "Obrigado(a)."
+              }
+            },
+            {
+              "name": {
+                "value": "Por favor."
+              }
+            },
+            {
+              "name": {
+                "value": "Desculpe."
+              }
+            },
+            {
+              "name": {
+                "value": "Eu não entendo."
+              }
+            },
+            {
+              "name": {
+                "value": "Como você está?"
+              }
+            },
+            {
+              "name": {
+                "value": "fala aí"
+              }
+            },
+            {
+              "name": {
+                "value": "Qual é o seu trabalho?"
+              }
+            },
+            {
+              "name": {
+                "value": "Onde você mora?"
+              }
+            },
+            {
+              "name": {
+                "value": "Como foi o seu dia?"
+              }
+            },
+            {
+              "name": {
+                "value": "Eu gostaria de"
+              }
+            },
+            {
+              "name": {
+                "value": "fala mano"
+              }
+            },
+            {
+              "name": {
+                "value": "E aí"
+              }
+            },
+            {
+              "name": {
+                "value": "Eu amo você."
+              }
+            },
+            {
+              "name": {
+                "value": "Como se diz em português?"
+              }
+            },
+            {
+              "name": {
+                "value": "Você quer sair?"
+              }
+            },
+            {
+              "name": {
+                "value": "Eu estou com fome."
+              }
+            },
+            {
+              "name": {
+                "value": "Eu estou com sede."
+              }
+            },
+            {
+              "name": {
+                "value": "Eu estou cansado."
+              }
+            },
+            {
+              "name": {
+                "value": "Eu estou ocupado."
+              }
+            },
+            {
+              "name": {
+                "value": "Eu estou doente."
+              }
+            },
+            {
+              "name": {
+                "value": "Eu não tenho certeza."
+              }
+            },
+            {
+              "name": {
+                "value": "fala"
+              }
+            }
+          ]
+        }
+      ],
+      "modelConfiguration": {
+        "fallbackIntentSensitivity": {
+          "level": "LOW"
+        }
+      }
+    }
+  },
+  "version": "149"
+}
