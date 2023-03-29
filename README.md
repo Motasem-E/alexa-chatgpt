@@ -17,6 +17,6 @@ pt-BR.json
 
 Recursos
 
-- Chat em ingles e português
-- É possível selecionar no código o nome do speaker
-- Continuar última conversa
+- Funcionalidade: Chat em ingles e português
+- Configuração: É possível selecionar no código o nome do speaker
+- Funcionalidade: Continuar a última conversa, se pedir continuar várias vezes consecutivas, será concatenado o historico das conversas para CHATGPT continuar

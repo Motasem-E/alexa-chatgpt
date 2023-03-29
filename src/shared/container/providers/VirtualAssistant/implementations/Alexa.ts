@@ -54,7 +54,7 @@ class Alexa implements IVirtualAssistantProvider {
 
           const result = await chatbot.prompt(query);
 
-          // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
+          // Variavel usada para armazenar a última conversa para poder pedir para continuar a historia
           attributes.completion = result;
 
           const speechText = getSpeakText({ handlerInput, en: result, pt: result });
@@ -71,7 +71,7 @@ class Alexa implements IVirtualAssistantProvider {
       },
     };
 
-    // Continuar a historia
+    // Continuar a historia (enquanto falar para continuar, ele vai concatenando o que já falou e irá complementar)
     const ContinueIntentHandler = {
       canHandle(handlerInput: HandlerInput): boolean {
         const request = handlerInput.requestEnvelope.request;
@@ -87,6 +87,10 @@ class Alexa implements IVirtualAssistantProvider {
           query += attributes.completion || (request.locale === 'en-US' ? 'Hi there' : 'Olá');
 
           const result = await chatbot.prompt(query);
+
+          // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
+          // Aqui é feita concatenação do result atual com os results anteriores caso ele mandar continuar várias vezes consecutivas
+          attributes.completion += result;
 
           const speechText = getSpeakText({ handlerInput, en: result, pt: result });
 

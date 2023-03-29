@@ -29,6 +29,9 @@ class ChatGPT implements IChatbotProvider {
       },
     );
 
+    // console.log('Query @@@@@@@: ', query);
+    // console.log('Response @@@@@@@: ', response.data.choices[0].text);
+
     return response.data.choices[0].text;
   }
 }
