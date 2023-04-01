@@ -1,5 +1,5 @@
 import aws, { S3 } from 'aws-sdk';
-import uploadConfig from '@config/upload';
+import uploadConfig from '@shared/container/providers/StorageProvider/config';
 
 import AppError from '@shared/errors/AppError';
 import IStorageProvider from '../models/IStorageProvider';

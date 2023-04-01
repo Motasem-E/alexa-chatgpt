@@ -1,5 +1,5 @@
 import path from 'path';
-import { env } from './env';
+import { env } from '../../../../../config/env';
 
 const tmpFolder = path.resolve(__dirname, '..', '..', 'tmp');
 
