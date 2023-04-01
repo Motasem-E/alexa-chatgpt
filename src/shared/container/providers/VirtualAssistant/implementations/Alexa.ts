@@ -11,6 +11,7 @@ import {
   LambdaHandler,
 } from 'ask-sdk';
 import { S3PersistenceAdapter } from 'ask-sdk-s3-persistence-adapter';
+import { env } from '@config/env';
 import IChatbotProvider from '../../Chatbot/models/IChatbotProvider';
 import ProvidersEnum from '../../ProvidersEnum';
 import config from '../config';
@@ -46,6 +47,7 @@ class Alexa implements IVirtualAssistantProvider {
     };
 
     // Ao abrir a aplicação e iniciar uma sessão, restaurar todo histórico de conversas
+    // E aplicar no Chatbot
     const restoreHistory = async (handlerInput: HandlerInput) => {
       const persistentData = await handlerInput.attributesManager.getPersistentAttributes();
       let history: IMessage[] = [];
@@ -57,6 +59,8 @@ class Alexa implements IVirtualAssistantProvider {
         ...handlerInput.attributesManager.getSessionAttributes(),
         history,
       });
+
+      chatbot.setupChatbot(history);
     };
 
     const addConversationToHistory = ({
@@ -366,7 +370,7 @@ class Alexa implements IVirtualAssistantProvider {
       .withApiClient(new DefaultApiClient())
       .withPersistenceAdapter(
         new S3PersistenceAdapter({
-          bucketName: process.env.S3_BUCKET_NAME,
+          bucketName: env.S3_BUCKET_NAME,
         }),
       )
       .lambda();

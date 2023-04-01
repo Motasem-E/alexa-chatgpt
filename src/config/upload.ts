@@ -20,7 +20,7 @@ export default {
   uploadsFolder: path.resolve(tmpFolder, 'uploads'),
   config: {
     aws: {
-      bucket: process.env.S3_BUCKET_NAME,
+      bucket: env.S3_BUCKET_NAME,
     },
   },
 } as IUploaderConfig;

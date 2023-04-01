@@ -2,6 +2,8 @@ import axios, { AxiosInstance } from 'axios';
 import IChatbotProvider from '../models/IChatbotProvider';
 import config from '../config';
 import IChatGptResponse from '../types/IChatGPTResponse';
+import IMessage from '../../VirtualAssistant/types/IMessage';
+import SpeakerEnum from '../../VirtualAssistant/types/SpeakerEnum';
 
 class ChatGPT implements IChatbotProvider {
   chatGPTAPI: AxiosInstance;
@@ -13,6 +15,26 @@ class ChatGPT implements IChatbotProvider {
         Authorization: config.token,
       },
     });
+  }
+
+  async setupChatbot(history: IMessage[]) {
+    const chatHistory = `initiate with the given conversation:
+      ${SpeakerEnum.SYSTEM}: "You are my best friend",
+      ${SpeakerEnum.SYSTEM}: "You are very supportive and optimistic person",
+      ${SpeakerEnum.SYSTEM}: "Your name is alex",
+    `;
+
+    /*
+      ${history.map((message, index) => {
+        let text = `${message.role}: "${message.content}"`;
+        if (index < history.length) {
+          text += ',';
+        }
+        return text;
+      })}
+    */
+
+    await this.prompt(chatHistory);
   }
 
   async prompt(query: string): Promise<string> {
