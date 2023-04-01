@@ -15,6 +15,9 @@ pt-BR.json
 
 ## 6- Se der erro abrir CloudWatch Logs, para testar tem aba Test (open chat ou abrir amigo)
 
+7- Pedir para Alexa:
+Alexa, turn on follow-up mode
+
 Recursos
 
 - Funcionalidade: Chat em ingles e português

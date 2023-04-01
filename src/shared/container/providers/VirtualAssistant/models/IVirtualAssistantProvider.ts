@@ -1,11 +1,9 @@
-import { LambdaHandler } from 'ask-sdk-core';
+import { LambdaHandler } from 'ask-sdk';
 import IChatbotProvider from '../../Chatbot/models/IChatbotProvider';
-import IGetSpeakText from '../types/IGetSpeakText';
 
 interface IVirtualAssistantProvider {
   getSkill(): LambdaHandler;
-  configureVirtualAssistant(chatbot: IChatbotProvider, getSpeakText: IGetSpeakText): void;
-  getSpeakText: IGetSpeakText;
+  configureVirtualAssistant(chatbot: IChatbotProvider): void;
 }
 
 export default IVirtualAssistantProvider;

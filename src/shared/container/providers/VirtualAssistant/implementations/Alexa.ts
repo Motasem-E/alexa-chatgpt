@@ -1,11 +1,22 @@
-import { ErrorHandler, HandlerInput, RequestHandler, SkillBuilders, getIntentName, getRequestType, LambdaHandler } from 'ask-sdk-core';
 import { Response } from 'ask-sdk-model';
 import { inject, injectable } from 'tsyringe';
+import {
+  DefaultApiClient,
+  ErrorHandler,
+  HandlerInput,
+  RequestHandler,
+  SkillBuilders,
+  getIntentName,
+  getRequestType,
+  LambdaHandler,
+} from 'ask-sdk';
+import { S3PersistenceAdapter } from 'ask-sdk-s3-persistence-adapter';
 import IChatbotProvider from '../../Chatbot/models/IChatbotProvider';
 import ProvidersEnum from '../../ProvidersEnum';
 import config from '../config';
 import IVirtualAssistantProvider from '../models/IVirtualAssistantProvider';
-import IGetSpeakText from '../types/IGetSpeakText';
+import SpeakerEnum from '../types/SpeakerEnum';
+import IMessage from '../types/IMessage';
 
 @injectable()
 class Alexa implements IVirtualAssistantProvider {
@@ -14,28 +25,131 @@ class Alexa implements IVirtualAssistantProvider {
   constructor(
     @inject(ProvidersEnum.CHATBOT)
     chatbot: IChatbotProvider,
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
   ) {
-    this.configureVirtualAssistant(chatbot, this.getSpeakText);
+    this.configureVirtualAssistant(chatbot);
   }
 
   getSkill(): LambdaHandler {
     return this.skill;
   }
 
-  getSpeakText({ handlerInput, en, pt }: { handlerInput: HandlerInput; en: string; pt: string }): string {
-    let speechText = `<voice name="${config.speaker(handlerInput.requestEnvelope.request.locale || 'en-US')}">`;
-    if (handlerInput.requestEnvelope.request.locale === 'en-US') {
-      speechText += en;
-    } else {
-      speechText += pt;
-    }
-    speechText += '</voice>';
-    return speechText;
-  }
-
-  configureVirtualAssistant = (chatbot: IChatbotProvider, getSpeakText: IGetSpeakText): void => {
+  configureVirtualAssistant = (chatbot: IChatbotProvider): void => {
     const cardTitle = 'Chatbot!';
+
+    // Ao fechar a aplicação e terminar a sessão, salvar historico das conversas
+    const persistHistory = async (handlerInput: HandlerInput) => {
+      const attributes = handlerInput.attributesManager.getSessionAttributes();
+      const history = attributes.history as IMessage[];
+
+      handlerInput.attributesManager.setPersistentAttributes({ history: JSON.stringify(history) });
+      await handlerInput.attributesManager.savePersistentAttributes();
+    };
+
+    // Ao abrir a aplicação e iniciar uma sessão, restaurar todo histórico de conversas
+    const restoreHistory = async (handlerInput: HandlerInput) => {
+      const persistentData = await handlerInput.attributesManager.getPersistentAttributes();
+      let history: IMessage[] = [];
+
+      if (persistentData.history !== undefined) {
+        history = JSON.parse(persistentData.history);
+      }
+      handlerInput.attributesManager.setSessionAttributes({
+        ...handlerInput.attributesManager.getSessionAttributes(),
+        history,
+      });
+    };
+
+    const addConversationToHistory = ({
+      role,
+      content,
+      handlerInput,
+    }: {
+      role: SpeakerEnum;
+      content: string;
+      handlerInput: HandlerInput;
+    }) => {
+      const attributes = handlerInput.attributesManager.getSessionAttributes();
+      if (!attributes.history) {
+        attributes.history = [];
+      }
+
+      const message: IMessage = {
+        role,
+        content,
+      };
+
+      attributes.history.push(message);
+    };
+
+    // Obter o texto a ser falado
+    const getTextToSpeak = ({
+      handlerInput,
+      en,
+      pt,
+      isSystemText,
+    }: {
+      handlerInput: HandlerInput;
+      en: string;
+      pt: string;
+      isSystemText: boolean;
+    }): string => {
+      let speechText = '';
+      if (handlerInput.requestEnvelope.request.locale === 'en-US') {
+        speechText = en;
+      } else {
+        speechText = pt;
+      }
+      if (!isSystemText) {
+        addConversationToHistory({
+          role: SpeakerEnum.ASSISTANT,
+          content: speechText,
+          handlerInput,
+        });
+      }
+
+      speechText = `<voice name="${config.speaker(handlerInput.requestEnvelope.request.locale || 'en-US')}">${speechText}</voice>`;
+      return speechText;
+    };
+
+    // Capturar o que foi falado
+    const getSpokenText = (handlerInput: HandlerInput): string => {
+      const request = handlerInput.requestEnvelope.request;
+      const attributes = handlerInput.attributesManager.getSessionAttributes();
+      let spokenText = '';
+
+      if (request.intent.name === 'UtteranceIntent') {
+        spokenText = request.intent.slots.text.value;
+      } else {
+        spokenText = request.locale === 'en-US' ? 'Continue the following: ' : 'Continue o seguinte: ';
+        // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
+        spokenText += attributes.completion || (request.locale === 'en-US' ? 'Hi there' : 'Olá');
+      }
+
+      addConversationToHistory({
+        role: SpeakerEnum.User,
+        content: spokenText,
+        handlerInput,
+      });
+
+      return spokenText;
+    };
+
+    const askChatbot = async (handlerInput: HandlerInput, query: string): Promise<string> => {
+      const request = handlerInput.requestEnvelope.request;
+      const attributes = handlerInput.attributesManager.getSessionAttributes();
+      const result = await chatbot.prompt(query);
+
+      if (request.intent.name === 'UtteranceIntent') {
+        // Variavel usada para armazenar a última conversa para poder pedir para continuar a historia
+        attributes.completion = result;
+      } else {
+        // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
+        // Aqui é feita concatenação do result atual com os results anteriores caso ele mandar continuar várias vezes consecutivas
+        attributes.completion += result;
+      }
+
+      return result;
+    };
 
     // Skill principal de contar historia (manter o skill aberto)
     const utteranceIntentHandler = {
@@ -46,26 +160,22 @@ class Alexa implements IVirtualAssistantProvider {
       },
       async handle(handlerInput: HandlerInput): Promise<Response> {
         try {
-          const request = handlerInput.requestEnvelope.request;
-          const attributes = handlerInput.attributesManager.getSessionAttributes();
-
           // Capturar o que foi falado
-          const query = request.intent.slots.text.value;
+          const query = getSpokenText(handlerInput);
 
-          const result = await chatbot.prompt(query);
+          const result = await askChatbot(handlerInput, query);
 
-          // Variavel usada para armazenar a última conversa para poder pedir para continuar a historia
-          attributes.completion = result;
-
-          const speechText = getSpeakText({ handlerInput, en: result, pt: result });
+          const speechText = getTextToSpeak({ handlerInput, en: result, pt: result, isSystemText: false });
 
           return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).withSimpleCard(cardTitle, speechText).getResponse();
         } catch (error) {
-          const speechText = getSpeakText({
+          const speechText = getTextToSpeak({
             handlerInput,
             en: 'Error while processing response, please try again later.',
             pt: 'Erro durante processamento da resposta, por favor tente mais tarde.',
+            isSystemText: true,
           });
+          console.log('utteranceIntentHandler Error: ', error);
           return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).withSimpleCard(cardTitle, speechText).getResponse();
         }
       },
@@ -80,46 +190,61 @@ class Alexa implements IVirtualAssistantProvider {
       },
       async handle(handlerInput: HandlerInput): Promise<Response> {
         try {
-          const request = handlerInput.requestEnvelope.request;
-          const attributes = handlerInput.attributesManager.getSessionAttributes();
-          // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
-          let query = request.locale === 'en-US' ? 'Continue the following: ' : 'Continue o seguinte: ';
-          query += attributes.completion || (request.locale === 'en-US' ? 'Hi there' : 'Olá');
+          const query = getSpokenText(handlerInput);
 
-          const result = await chatbot.prompt(query);
+          const result = await askChatbot(handlerInput, query);
 
-          // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
-          // Aqui é feita concatenação do result atual com os results anteriores caso ele mandar continuar várias vezes consecutivas
-          attributes.completion += result;
-
-          const speechText = getSpeakText({ handlerInput, en: result, pt: result });
+          const speechText = getTextToSpeak({ handlerInput, en: result, pt: result, isSystemText: false });
 
           return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).withSimpleCard(cardTitle, speechText).getResponse();
         } catch (error) {
-          const speechText = getSpeakText({
+          const speechText = getTextToSpeak({
             handlerInput,
             en: 'Error while processing response, please try again later.',
             pt: 'Erro durante processamento da resposta, por favor tente mais tarde.',
+            isSystemText: true,
           });
+          console.log('ContinueIntentHandler Error: ', error);
           return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).withSimpleCard(cardTitle, speechText).getResponse();
         }
       },
     };
 
-    // Skill is Launched
+    /*
+      Skill is Launched
+      Restaurar histórico de conversa
+    */
     const LaunchRequestHandler = {
       canHandle(handlerInput: HandlerInput): boolean {
         const request = handlerInput.requestEnvelope.request;
         return request.type === 'LaunchRequest';
       },
-      handle(handlerInput: HandlerInput): Response {
-        const speechText = getSpeakText({
+      async handle(handlerInput: HandlerInput): Promise<Response> {
+        await restoreHistory(handlerInput);
+
+        const speechText = getTextToSpeak({
           handlerInput,
           en: 'Hi there!',
           pt: 'Fala aí!',
+          isSystemText: true,
         });
 
         return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).withSimpleCard(cardTitle, speechText).getResponse();
+      },
+    };
+
+    /*
+      Handler when session is ended (cleanup)
+      Salvar todo histórico de conversa
+    */
+    const SessionEndedRequestHandler: RequestHandler = {
+      canHandle(handlerInput: HandlerInput): boolean {
+        const request = handlerInput.requestEnvelope.request;
+        return request.type === 'SessionEndedRequest';
+      },
+      async handle(handlerInput: HandlerInput): Promise<Response> {
+        await persistHistory(handlerInput);
+        return handlerInput.responseBuilder.getResponse();
       },
     };
 
@@ -130,10 +255,11 @@ class Alexa implements IVirtualAssistantProvider {
         return request.type === 'IntentRequest' && request.intent.name === 'AMAZON.HelpIntent';
       },
       handle(handlerInput: HandlerInput): Response {
-        const speechText = getSpeakText({
+        const speechText = getTextToSpeak({
           handlerInput,
           en: `I'm ChatGPT bot, you can ask me anything.`,
           pt: 'Eu sou ChatGPT, você pode me perguntar qualquer coisa',
+          isSystemText: true,
         });
 
         return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).withSimpleCard(cardTitle, speechText).getResponse();
@@ -149,10 +275,11 @@ class Alexa implements IVirtualAssistantProvider {
         );
       },
       handle(handlerInput: HandlerInput): Response {
-        const speechText = getSpeakText({
+        const speechText = getTextToSpeak({
           handlerInput,
           en: 'Goodbye!',
           pt: 'Até Mais!',
+          isSystemText: true,
         });
 
         return handlerInput.responseBuilder
@@ -160,18 +287,6 @@ class Alexa implements IVirtualAssistantProvider {
           .withSimpleCard(cardTitle, speechText)
           .withShouldEndSession(true)
           .getResponse();
-      },
-    };
-
-    // Handler when session is ended (cleanup)
-    const SessionEndedRequestHandler: RequestHandler = {
-      canHandle(handlerInput: HandlerInput): boolean {
-        const request = handlerInput.requestEnvelope.request;
-        return request.type === 'SessionEndedRequest';
-      },
-      handle(handlerInput: HandlerInput): Response {
-        // console.log(`Session ended with reason: ${(handlerInput.requestEnvelope.request as SessionEndedRequest).reason}`);
-        return handlerInput.responseBuilder.getResponse();
       },
     };
 
@@ -183,10 +298,11 @@ class Alexa implements IVirtualAssistantProvider {
       handle(handlerInput: HandlerInput, error: Error): Response {
         console.log(`Error handled: ${error.message}`);
 
-        const speechText = getSpeakText({
+        const speechText = getTextToSpeak({
           handlerInput,
           en: `Sorry, I don't understand your command. Please say it again.`,
           pt: 'Desulpe, eu não entendi, por favor fale novamente',
+          isSystemText: true,
         });
 
         return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).getResponse();
@@ -203,10 +319,11 @@ class Alexa implements IVirtualAssistantProvider {
       handle(handlerInput: HandlerInput): Response {
         const intentName = getIntentName(handlerInput.requestEnvelope);
 
-        const speechText = getSpeakText({
+        const speechText = getTextToSpeak({
           handlerInput,
           en: `You just triggered ${intentName}`,
           pt: `Você disparou ${intentName}`,
+          isSystemText: true,
         });
 
         return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).getResponse();
@@ -222,10 +339,11 @@ class Alexa implements IVirtualAssistantProvider {
         );
       },
       handle(handlerInput: HandlerInput): Response {
-        const speechText = getSpeakText({
+        const speechText = getTextToSpeak({
           handlerInput,
           en: `Sorry, I have no knowledge about that. FallbackIntent`,
           pt: `Foi mal, não tenho o conhecimento sobre isso. fallbackIntent`,
+          isSystemText: true,
         });
 
         return handlerInput.responseBuilder.speak(speechText).reprompt(speechText).getResponse();
@@ -244,6 +362,13 @@ class Alexa implements IVirtualAssistantProvider {
         IntentReflectorHandler, // make sure IntentReflectorHandler is last so it doesn't override your custom intent handlers
       )
       .addErrorHandlers(ErrorHandler)
+      // Obter o timezone, device_id
+      .withApiClient(new DefaultApiClient())
+      .withPersistenceAdapter(
+        new S3PersistenceAdapter({
+          bucketName: process.env.S3_BUCKET_NAME,
+        }),
+      )
       .lambda();
   };
 }

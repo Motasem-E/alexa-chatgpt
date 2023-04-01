@@ -10,6 +10,7 @@ const envVars = z.object({
   CHATGPT_TOKEN: z.string(),
   CHATGPT_MODEL: z.string(),
   STORAGE_PROVIDER: z.nativeEnum(StorageProvider),
+  S3_BUCKET_NAME: z.string(),
 });
 
 declare global {

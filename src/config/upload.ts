@@ -8,7 +8,6 @@ interface IUploaderConfig {
   tmpFolder: string;
   uploadsFolder: string;
   config: {
-    disk: unknown;
     aws: {
       bucket: string;
     };
@@ -20,9 +19,8 @@ export default {
   tmpFolder,
   uploadsFolder: path.resolve(tmpFolder, 'uploads'),
   config: {
-    disk: {},
     aws: {
-      bucket: 'example-bucket',
+      bucket: process.env.S3_BUCKET_NAME,
     },
   },
 } as IUploaderConfig;
