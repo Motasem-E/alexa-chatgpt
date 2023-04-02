@@ -39,10 +39,10 @@ class Alexa implements IVirtualAssistantProvider {
   // Ao fechar a aplicação e terminar a sessão, salvar historico das conversas
   persistHistory = async (handlerInput: HandlerInput) => {
     const attributes = handlerInput.attributesManager.getSessionAttributes();
-    const history = (attributes.history || []) as IMessage[];
+    let history = (attributes.history || []) as IMessage[];
 
     if (history.length > config.persistHistory) {
-      history.slice(history.length - config.persistHistory, history.length);
+      history = history.slice(history.length - config.persistHistory, history.length);
     }
 
     handlerInput.attributesManager.setPersistentAttributes({ history: JSON.stringify(history) });
