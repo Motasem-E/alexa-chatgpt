@@ -1,9 +1,8 @@
 import { LambdaHandler } from 'ask-sdk';
-import IChatbotProvider from '../../Chatbot/models/IChatbotProvider';
 
 interface IVirtualAssistantProvider {
   getSkill(): LambdaHandler;
-  configureVirtualAssistant(chatbot: IChatbotProvider): void;
+  configureVirtualAssistant(): void;
 }
 
 export default IVirtualAssistantProvider;

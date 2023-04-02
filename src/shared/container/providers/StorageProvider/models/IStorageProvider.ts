@@ -1,8 +1,7 @@
+import { PersistenceAdapter } from 'ask-sdk';
+
 interface IStorageProvider {
-  saveDataToFile(fileName: string, data: string): Promise<void>;
-  getFileContents(fileName: string): Promise<string>;
-  getLastFileContents(): string;
-  deleteFile(fileName: string): Promise<void>;
+  getPersistenceAdapter(): PersistenceAdapter;
 }
 
 export default IStorageProvider;

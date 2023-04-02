@@ -1,6 +1,5 @@
 /* eslint-disable */
 import { z } from 'zod';
-import { StorageProvider } from '@shared/container/providers/StorageProvider/types/StorageProvider';
 
 /**
  * Specify your server-side environment variables schema here.
@@ -9,7 +8,6 @@ import { StorageProvider } from '@shared/container/providers/StorageProvider/typ
 const envVars = z.object({
   CHATGPT_TOKEN: z.string(),
   CHATGPT_MODEL: z.string(),
-  STORAGE_PROVIDER: z.nativeEnum(StorageProvider),
   S3_BUCKET_NAME: z.string(),
 });
 
