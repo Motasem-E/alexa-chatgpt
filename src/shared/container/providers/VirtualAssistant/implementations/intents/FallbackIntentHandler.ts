@@ -1,17 +1,19 @@
+import ProvidersEnum from '@shared/container/providers/ProvidersEnum';
 import { getIntentName, getRequestType, HandlerInput, RequestHandler } from 'ask-sdk';
 import { Response } from 'ask-sdk-model';
-import IIntent from '../../models/IIntent';
-import AlexaFunctions from '../AlexaFunctions';
+import { inject, injectable } from 'tsyringe';
+import IVirtualAssistantFunctions from '../../interfaces/IVirtualAssistantFunctions';
+import IIntent from '../../interfaces/IIntent';
 
 /*
   Called when no other Intent is suported
 */
+@injectable()
 class FallbackIntentHandler implements IIntent {
-  private alexaFunctions: AlexaFunctions;
-
-  constructor(alexaFunctions: AlexaFunctions) {
-    this.alexaFunctions = alexaFunctions;
-  }
+  constructor(
+    @inject(ProvidersEnum.VIRTUAL_ASSISTANT_FUNCTIONS)
+    private alexaFunctions: IVirtualAssistantFunctions,
+  ) {}
 
   getIntent(): RequestHandler {
     return {

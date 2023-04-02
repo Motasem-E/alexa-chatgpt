@@ -1,16 +1,18 @@
+import ProvidersEnum from '@shared/container/providers/ProvidersEnum';
 import { getIntentName, HandlerInput, RequestHandler } from 'ask-sdk';
 import { Response } from 'ask-sdk-model';
-import IIntent from '../../models/IIntent';
-import AlexaFunctions from '../AlexaFunctions';
+import { inject, injectable } from 'tsyringe';
+import IVirtualAssistantFunctions from '../../interfaces/IVirtualAssistantFunctions';
+import IIntent from '../../interfaces/IIntent';
 
 // The intent reflector is used for interaction model testing and debugging.
 // It will simply repeat the intent the user said. You can create custom handlers
+@injectable()
 class IntentReflectorHandler implements IIntent {
-  private alexaFunctions: AlexaFunctions;
-
-  constructor(alexaFunctions: AlexaFunctions) {
-    this.alexaFunctions = alexaFunctions;
-  }
+  constructor(
+    @inject(ProvidersEnum.VIRTUAL_ASSISTANT_FUNCTIONS)
+    private alexaFunctions: IVirtualAssistantFunctions,
+  ) {}
 
   getIntent(): RequestHandler {
     return {

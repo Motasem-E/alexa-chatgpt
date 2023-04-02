@@ -1,4 +1,4 @@
-import IMessage from '../../VirtualAssistant/types/IMessage';
+import IMessage from '../../VirtualAssistant/interfaces/IMessage';
 
 interface IChatbotProvider {
   setupChatbot(history: IMessage[], lanugage: 'en' | 'pt'): void;

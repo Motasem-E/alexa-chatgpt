@@ -1,4 +1,4 @@
-import SpeakerEnum from './SpeakerEnum';
+import SpeakerEnum from '../types/SpeakerEnum';
 
 interface IMessage {
   role: SpeakerEnum;

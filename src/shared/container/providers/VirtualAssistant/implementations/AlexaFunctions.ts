@@ -1,11 +1,11 @@
 import { inject, injectable } from 'tsyringe';
 import { HandlerInput } from 'ask-sdk';
-import IChatbotProvider from '../../Chatbot/models/IChatbotProvider';
+import IChatbotProvider from '../../Chatbot/interfaces/IChatbotProvider';
 import ProvidersEnum from '../../ProvidersEnum';
 import config from '../config';
-import IChatbotsFunctions, { IAddConversationToHistoryParams, IGetTextToSpeakParams } from '../models/IChatbotFunctions';
+import IChatbotsFunctions, { IAddConversationToHistoryParams, IGetTextToSpeakParams } from '../interfaces/IVirtualAssistantFunctions';
 import SpeakerEnum from '../types/SpeakerEnum';
-import IMessage from '../types/IMessage';
+import IMessage from '../interfaces/IMessage';
 
 @injectable()
 class AlexaFunctions implements IChatbotsFunctions {

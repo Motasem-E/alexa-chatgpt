@@ -14,7 +14,7 @@ export interface IGetTextToSpeakParams {
   isSystemText: boolean;
 }
 
-interface IChatbotFunctions {
+interface IVirtualAssistantFunctions {
   persistHistory(handlerInput: HandlerInput): Promise<void>;
   restoreHistory(handlerInput: HandlerInput): Promise<void>;
   addConversationToHistory(params: IAddConversationToHistoryParams): void;
@@ -23,4 +23,4 @@ interface IChatbotFunctions {
   askChatbot(handlerInput: HandlerInput, query: string): Promise<string>;
 }
 
-export default IChatbotFunctions;
+export default IVirtualAssistantFunctions;

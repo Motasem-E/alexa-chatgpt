@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "commonjs",
   "scripts": {
-    "build": "tsup ./src/** --out-dir ./dist/lambda && @powershell cp ./package.json ./dist/lambda/ && @powershell cp ./.env ./dist/lambda/ && @powershell \"C:/'Program Files'/7-Zip/7z.exe\" a ./dist/lambda.zip ./dist/lambda",
+    "package": "tsup ./src/** --out-dir ./dist/lambda && @powershell cp ./package.json ./dist/lambda/ && @powershell cp ./.env ./dist/lambda/ && @powershell \"C:/'Program Files'/7-Zip/7z.exe\" a ./dist/lambda.zip ./dist/lambda",
     "test": "jest",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint src/**/*.ts"

@@ -1,18 +1,20 @@
 import { HandlerInput, RequestHandler } from 'ask-sdk';
 import { Response } from 'ask-sdk-model';
-import IIntent from '../../models/IIntent';
-import AlexaFunctions from '../AlexaFunctions';
+import { inject, injectable } from 'tsyringe';
+import ProvidersEnum from '@shared/container/providers/ProvidersEnum';
+import IIntent from '../../interfaces/IIntent';
+import IVirtualAssistantFunctions from '../AlexaFunctions';
 import Config from '../../config';
 
 /*
   User asked to stop
 */
+@injectable()
 class CancelAndStopIntentHandler implements IIntent {
-  private alexaFunctions: AlexaFunctions;
-
-  constructor(alexaFunctions: AlexaFunctions) {
-    this.alexaFunctions = alexaFunctions;
-  }
+  constructor(
+    @inject(ProvidersEnum.VIRTUAL_ASSISTANT_FUNCTIONS)
+    private alexaFunctions: IVirtualAssistantFunctions,
+  ) {}
 
   getIntent(): RequestHandler {
     return {

@@ -1,16 +1,18 @@
 import { HandlerInput, RequestHandler } from 'ask-sdk';
 import { Response } from 'ask-sdk-model';
-import IIntent from '../../models/IIntent';
-import AlexaFunctions from '../AlexaFunctions';
+import { inject, injectable } from 'tsyringe';
+import ProvidersEnum from '@shared/container/providers/ProvidersEnum';
+import IIntent from '../../interfaces/IIntent';
 import Config from '../../config';
+import IVirtualAssistantFunctions from '../../interfaces/IVirtualAssistantFunctions';
 
 // Continuar a historia (enquanto falar para continuar, ele vai concatenando o que já falou e irá complementar)
+@injectable()
 class ContinueIntentHandler implements IIntent {
-  private alexaFunctions: AlexaFunctions;
-
-  constructor(alexaFunctions: AlexaFunctions) {
-    this.alexaFunctions = alexaFunctions;
-  }
+  constructor(
+    @inject(ProvidersEnum.VIRTUAL_ASSISTANT_FUNCTIONS)
+    private alexaFunctions: IVirtualAssistantFunctions,
+  ) {}
 
   getIntent(): RequestHandler {
     return {

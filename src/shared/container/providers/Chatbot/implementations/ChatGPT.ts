@@ -1,8 +1,8 @@
 import axios, { AxiosInstance } from 'axios';
-import IChatbotProvider from '../models/IChatbotProvider';
+import IChatbotProvider from '../interfaces/IChatbotProvider';
 import config from '../config';
 import IChatGptResponse from '../types/IChatGPTResponse';
-import IMessage from '../../VirtualAssistant/types/IMessage';
+import IMessage from '../../VirtualAssistant/interfaces/IMessage';
 import SpeakerEnum from '../../VirtualAssistant/types/SpeakerEnum';
 
 class ChatGPT implements IChatbotProvider {
