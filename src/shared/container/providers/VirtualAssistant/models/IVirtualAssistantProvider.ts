@@ -1,8 +1,8 @@
 import { LambdaHandler } from 'ask-sdk';
 
 interface IVirtualAssistantProvider {
-  getSkill(): LambdaHandler;
   configureVirtualAssistant(): void;
+  getSkill(): LambdaHandler;
 }
 
 export default IVirtualAssistantProvider;

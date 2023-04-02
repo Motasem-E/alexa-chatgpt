@@ -8,7 +8,8 @@ import { z } from 'zod';
 const envVars = z.object({
   CHATGPT_TOKEN: z.string(),
   CHATGPT_MODEL: z.string(),
-  S3_BUCKET_NAME: z.string(),
+  S3_BUCKET_NAME: z.string().optional(),
+  HISTORY_LIMIT: z.string().optional().transform(Number),
 });
 
 declare global {
