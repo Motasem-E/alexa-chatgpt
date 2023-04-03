@@ -23,7 +23,7 @@ class AlexaFunctions implements IChatbotsFunctions {
       history = history.slice(history.length - config.persistHistory, history.length);
     }
 
-    handlerInput.attributesManager.setPersistentAttributes({ history: JSON.stringify(history) });
+    handlerInput.attributesManager.setPersistentAttributes({ history });
     await handlerInput.attributesManager.savePersistentAttributes();
   };
 
@@ -35,7 +35,7 @@ class AlexaFunctions implements IChatbotsFunctions {
     let history: IMessage[] = [];
 
     if (persistentData.history !== undefined) {
-      history = JSON.parse(persistentData.history);
+      history = persistentData.history;
     }
 
     handlerInput.attributesManager.setSessionAttributes({

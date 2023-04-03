@@ -1,4 +1,5 @@
 /* eslint-disable */
+import StorageEnum from '@shared/container/providers/StorageProvider/interfaces/StorageEnum';
 import { z } from 'zod';
 
 /**
@@ -8,7 +9,9 @@ import { z } from 'zod';
 const envVars = z.object({
   CHATGPT_TOKEN: z.string(),
   CHATGPT_MODEL: z.string(),
+  STORAGE_PROVIDER: z.nativeEnum(StorageEnum),
   S3_BUCKET_NAME: z.string().optional(),
+  DYNAMODB_TABLE_NAME: z.string().optional(),
   HISTORY_LIMIT: z.string().optional().transform(Number),
 });
 
