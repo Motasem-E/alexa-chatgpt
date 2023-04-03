@@ -16,31 +16,31 @@ class AlexaFunctions implements IChatbotsFunctions {
 
   // Ao fechar a aplicação e terminar a sessão, salvar historico das conversas
   persistHistory = async (handlerInput: HandlerInput) => {
+    const request = handlerInput.requestEnvelope.request;
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     let history = (attributes.history || []) as IMessage[];
+    const lastSentence = attributes.lastSentence || (request.locale === 'en-US' ? 'Hi there' : 'Olá');
 
     if (history.length > config.persistHistory) {
       history = history.slice(history.length - config.persistHistory, history.length);
     }
 
-    handlerInput.attributesManager.setPersistentAttributes({ history });
+    handlerInput.attributesManager.setPersistentAttributes({ history, lastSentence });
     await handlerInput.attributesManager.savePersistentAttributes();
   };
 
   // Ao abrir a aplicação e iniciar uma sessão, restaurar todo histórico de conversas
   // E aplicar no Chatbot
   restoreHistory = async (handlerInput: HandlerInput) => {
+    const request = handlerInput.requestEnvelope.request;
     const persistentData = await handlerInput.attributesManager.getPersistentAttributes();
     const language = handlerInput.requestEnvelope.request.locale || 'en-US';
-    let history: IMessage[] = [];
-
-    if (persistentData.history !== undefined) {
-      history = persistentData.history;
-    }
+    const history: IMessage[] = persistentData.history || [];
 
     handlerInput.attributesManager.setSessionAttributes({
       ...handlerInput.attributesManager.getSessionAttributes(),
       history,
+      lastSentence: persistentData.lastSentence || (request.locale === 'en-US' ? 'Hi there' : 'Olá'),
     });
 
     this.chatbot.setupChatbot(history, language === 'pt-BR' ? 'pt' : 'en');
@@ -86,12 +86,14 @@ class AlexaFunctions implements IChatbotsFunctions {
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     let spokenText = '';
 
+    // Nova topico da conversa
     if (request.intent.name === 'UtteranceIntent') {
       spokenText = request.intent.slots.text.value;
-    } else {
+    }
+    // Solicitação de continuar a conversa
+    else {
       spokenText = request.locale === 'en-US' ? 'Continue the following: ' : 'Continue o seguinte: ';
-      // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
-      spokenText += attributes.completion || (request.locale === 'en-US' ? 'Hi there' : 'Olá');
+      spokenText += attributes.lastSentence || (request.locale === 'en-US' ? 'Hi there' : 'Olá');
     }
 
     this.addConversationToHistory({
@@ -108,13 +110,16 @@ class AlexaFunctions implements IChatbotsFunctions {
     const attributes = handlerInput.attributesManager.getSessionAttributes();
     const result = await this.chatbot.prompt(query);
 
+    // Nova topico da conversa
     if (request.intent.name === 'UtteranceIntent') {
       // Variavel usada para armazenar a última conversa para poder pedir para continuar a historia
-      attributes.completion = result;
-    } else {
+      attributes.lastSentence = result;
+    }
+    // Solicitação de continuar a conversa
+    else {
       // Variavel usada para armazenar o historico das conversas para pedir para continuar a historia
       // Aqui é feita concatenação do result atual com os results anteriores caso ele mandar continuar várias vezes consecutivas
-      attributes.completion += result;
+      attributes.lastSentence += result;
     }
 
     return result;

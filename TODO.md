@@ -1,7 +1,6 @@
-1- ChatGPT: descomentar o código do historico e colocar no texto
--- limitar o numero máximo de registros
+1- Verificar jeito para carregamento automático de .zip na plataforma
+2- Falar bom dia, boa tarde e boa noite
 
-2- Verificar jeito para carregamento automático de .zip na plataforma
-4- Falar bom dia, boa tarde e boa noite
+#### IMPLMENTAÇÃO FUTURA
 
-- Alterar getSpokenText para obter o último item do history
+1- ChatGPT: inserir o contexto da conversa via historico (CHATGPT não grava contexto)
