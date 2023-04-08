@@ -1,5 +1,5 @@
 import { IModuleMetadata } from '@shared/types/IModuleMetadata';
-import modulesContext from '@shared/container/modulesContext';
+import modulesContext from '@shared/container/context/modulesContext';
 
 export default function Module({ name, providers }: IModuleMetadata) {
   return function (constructor: Function) {

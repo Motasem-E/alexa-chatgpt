@@ -1,6 +1,6 @@
 import { container, inject, injectable } from 'tsyringe';
 import { DefaultApiClient, SkillBuilders, LambdaHandler } from 'ask-sdk';
-import ProvidersEnum from '../../ProvidersEnum';
+import ProvidersEnum from '../../../../types/ProvidersEnum';
 import IVirtualAssistantProvider from '../interfaces/IVirtualAssistantProvider';
 import IStorageProvider from '../../StorageProvider/interfaces/IStorageProvider';
 import LaunchRequestHandler from './intents/LaunchRequestHandler';

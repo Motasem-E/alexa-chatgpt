@@ -17,6 +17,11 @@ class ChatGPT implements IChatbotProvider {
     });
   }
 
+  /**
+   * Yet history conext is not insered due to CHATGPT limitations.
+   * @param history
+   * @param lanugage
+   */
   async setupChatbot(history: IMessage[], lanugage: 'en' | 'pt') {
     let chatHistory = ``;
     if (lanugage === 'en') {

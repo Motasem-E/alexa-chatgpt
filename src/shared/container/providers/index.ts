@@ -1,5 +1,5 @@
 import Module from '@shared/decorators/Module';
-import ProvidersEnum from './ProvidersEnum';
+import ProvidersEnum from '../../types/ProvidersEnum';
 import ChatGPT from './Chatbot/implementations/ChatGPT';
 import AlexaSkill from './VirtualAssistant/implementations/AlexaSkill';
 import AlexaFunctions from './VirtualAssistant/implementations/AlexaFunctions';

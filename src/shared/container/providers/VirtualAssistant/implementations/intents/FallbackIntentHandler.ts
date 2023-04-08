@@ -1,4 +1,4 @@
-import ProvidersEnum from '@shared/container/providers/ProvidersEnum';
+import ProvidersEnum from '@shared/types/ProvidersEnum';
 import { getIntentName, getRequestType, HandlerInput, RequestHandler } from 'ask-sdk';
 import { Response } from 'ask-sdk-model';
 import { inject, injectable } from 'tsyringe';

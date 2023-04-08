@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 import { HandlerInput } from 'ask-sdk';
 import IChatbotProvider from '../../Chatbot/interfaces/IChatbotProvider';
-import ProvidersEnum from '../../ProvidersEnum';
+import ProvidersEnum from '../../../../types/ProvidersEnum';
 import config from '../config';
 import IChatbotsFunctions, { IAddConversationToHistoryParams, IGetTextToSpeakParams } from '../interfaces/IVirtualAssistantFunctions';
 import SpeakerEnum from '../types/SpeakerEnum';
