@@ -8,6 +8,6 @@ export default {
     objectKeyGenerator: (_: RequestEnvelope) => 'chathistory.txt',
   },
   dynamoDB: {
-    tableName: 'b8561264-7f67-4658-bdc5-3aa62c695aea',
+    tableName: env.DYNAMODB_TABLE_NAME || '',
   },
 };
