@@ -1,5 +1,5 @@
 /* eslint-disable */
-import StorageEnum from '@shared/container/providers/StorageProvider/interfaces/StorageEnum';
+import StorageEnum from '@shared/container/providers/StorageProvider/types/StorageEnum';
 import { z } from 'zod';
 
 /**

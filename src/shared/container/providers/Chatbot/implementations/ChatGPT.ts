@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import IChatbotProvider from '../interfaces/IChatbotProvider';
-import config from '../config';
-import IChatGptResponse from '../types/IChatGPTResponse';
+import config from '../configs';
+import IChatGptResponse from '../interfaces/IChatGPTResponse';
 import IMessage from '../../VirtualAssistant/interfaces/IMessage';
 import SpeakerEnum from '../../VirtualAssistant/types/SpeakerEnum';
 
@@ -22,33 +22,33 @@ class ChatGPT implements IChatbotProvider {
    * @param history
    * @param lanugage
    */
-  async setupChatbot(history: IMessage[], lanugage: 'en' | 'pt') {
+  async setupChatbot(_history: IMessage[], lanugage: 'en' | 'pt') {
     let chatHistory = ``;
     if (lanugage === 'en') {
       chatHistory += `Initiate with the given conversation:
-      ${SpeakerEnum.SYSTEM}: "Your are human and your name is Sam",
-      ${SpeakerEnum.SYSTEM}: "You are my best friend",
-      ${SpeakerEnum.SYSTEM}: "You are very supportive and optimistic friend"
-    `;
+        ${SpeakerEnum.SYSTEM}: "Your are human and your name is Sam",
+        ${SpeakerEnum.SYSTEM}: "You are my best friend",
+        ${SpeakerEnum.SYSTEM}: "You are very supportive and optimistic friend"
+      `;
     } else {
       chatHistory += `Inicie com a seguinte conversa:
-      ${SpeakerEnum.SYSTEM}: "Você é humano e seu nome é Sam",
-      ${SpeakerEnum.SYSTEM}: "Você é o meu melhor amigo",
-      ${SpeakerEnum.SYSTEM}: "Você é muito otimista e solidário"
-    `;
+        ${SpeakerEnum.SYSTEM}: "Você é humano e seu nome é Sam",
+        ${SpeakerEnum.SYSTEM}: "Você é o meu melhor amigo",
+        ${SpeakerEnum.SYSTEM}: "Você é muito otimista e solidário"
+      `;
     }
 
     /*
-      ${history.map((message, index) => {
-        let text = `${message.role}: "${message.content}"`;
-        if (index < history.length) {
-          text += ',';
-        }
-        return text;
-      })}
-    */
+        ${_history.map((message, index) => {
+          let text = `${message.role}: "${message.content}"`;
+          if (index < _history.length) {
+            text += ',';
+          }
+          return text;
+        })}
+      */
 
-    // await this.prompt(chatHistory);
+    await this.prompt(chatHistory);
   }
 
   /**

@@ -4,7 +4,7 @@ import { inject, injectable } from 'tsyringe';
 import ProvidersEnum from '@shared/types/ProvidersEnum';
 import IIntent from '../../interfaces/IIntent';
 import IVirtualAssistantFunctions from '../AlexaFunctions';
-import Config from '../../config';
+import Config from '../../configs';
 
 /*
   User asked to stop
