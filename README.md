@@ -1,6 +1,6 @@
 # Alexa Conversational skill with ChatGPT integration
 
-### 1- For installation, please follow Installation.md instructions
+### 1- For installation, please follow [Installation.md](./Installation.md) instructions
 
 ### 2- Billing: num_tokens(prompt) + max_tokens \* max(n, best_of)
 
