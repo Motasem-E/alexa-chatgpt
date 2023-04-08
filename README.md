@@ -1,22 +1,16 @@
-1- Create a New Custom Skill: https://developer.amazon.com/alexa/console/ask
-Nome Skill:
-English: chat
-Português: amigo
+# Alexa Conversational skill with ChatGPT integration
 
-2- Build -> Intents -> JSON EDITOR -> Adicionar
-en-US.json
-pt-BR.json
+### 1- For installation, please follow Installation.md instructions
 
-3- Projeto -> yarn build
+### 2- Billing: num_tokens(prompt) + max_tokens \* max(n, best_of)
 
-4- copiar ./dist/lambda.zip para skill -> code -> import code
+### 3- Features & Configurations:
 
-5- Deploy
+- Feature: Chat Languages in English and Portuguese
 
-## 6- Se der erro abrir CloudWatch Logs, para testar tem aba Test (open chat ou abrir amigo)
+- Feature: Continue last conversation. When asked to continue several consecutive times, the conversation history will be concatenated for CHATGPT to continue.
+- Feature: Persist chat history in S3 bucket or DynamoDB
 
-Recursos
+- Configuration: Speaker selection in code
 
-- Funcionalidade: Chat em ingles e português
-- Configuração: É possível selecionar no código o nome do speaker
-- Funcionalidade: Continuar a última conversa, se pedir continuar várias vezes consecutivas, será concatenado o historico das conversas para CHATGPT continuar
+- Configuration: limit chat history persistence

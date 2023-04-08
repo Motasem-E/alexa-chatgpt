@@ -1,6 +1,5 @@
-1- perguntar com quem gostaria de falar
-2- salvar todo historico no DB de conversa e pedir para continuar
-3- Verificar jeito para carregamento automático de .zip na plataforma
-4- pedir para robo desligar luz
+## Future Implementations
 
-- Falar para agir como amigo Chatgpt
+1- Deploy and test via Ask-CLI
+
+2- ChatGPT: analyze the context of chat history and insert it in chatgpt prompt

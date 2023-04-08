@@ -1,7 +1,7 @@
-import winston, { createLogger, format, transports } from 'winston';
+import { createLogger, format } from 'winston';
 import { sub } from 'date-fns';
 
-const { combine, timestamp, printf, colorize } = format;
+const { combine, timestamp, printf } = format;
 
 const customFormat = printf(
   ({ level, message, timestamp }) => `${sub(new Date(timestamp), { hours: 3 }).toISOString()} ${level}: ${message}`,
