@@ -1,9 +1,11 @@
 ## Installation
 
 1- Create a New Custom Skill: https://developer.amazon.com/alexa/console/ask
-Nome Skill:
-English: chat
-Português: amigo
+
+Skill name:
+
+- English: chat
+- Português: amigo
 
 2- Build -> Intents -> JSON EDITOR -> Add
 
