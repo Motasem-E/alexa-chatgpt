@@ -1,6 +1,5 @@
 import { IModuleMetadata } from '@shared/types/IModuleMetadata';
 import modulesContext from '@shared/container/modulesContext';
-import logger from '@config/log';
 
 export default function Module({ name, providers }: IModuleMetadata) {
   return function (constructor: Function) {
