@@ -1,19 +1,29 @@
+## Installation
+
 1- Create a New Custom Skill: https://developer.amazon.com/alexa/console/ask
 Nome Skill:
 English: chat
 Português: amigo
 
-2- Build -> Intents -> JSON EDITOR -> Adicionar
-en-US.json
-pt-BR.json
+2- Build -> Intents -> JSON EDITOR -> Add
 
-3- Projeto -> yarn build
+- en-US.json
+- pt-BR.json
 
-4- copiar ./dist/lambda.zip para skill -> code -> import code
+3- Project -> console -> yarn build
+
+4- Add ./dist/lambda.zip to skill:
+
+- Skill console -> code tab -> import code
 
 5- Deploy
 
-## 6- Se der erro abrir CloudWatch Logs, para testar tem aba Test (open chat ou abrir amigo)
+## Testing
 
-7- Pedir para Alexa:
-Alexa, turn on follow-up mode
+- Skill console -> Test tab -> open chat (or abrir amigo)
+
+## Debugging
+
+After testing, if any error occurred, check CouldWatch Logs
+
+- Skill console -> code tab -> CloudWatch Logs

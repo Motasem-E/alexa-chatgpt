@@ -1,6 +1,5 @@
-1- Verificar jeito para carregamento automático de .zip na plataforma
-2- Falar bom dia, boa tarde e boa noite
+## Future Implementations
 
-#### IMPLMENTAÇÃO FUTURA
+1- Deploy and test via Ask-CLI
 
-1- ChatGPT: inserir o contexto da conversa via historico (CHATGPT não grava contexto)
+2- ChatGPT: analyze the context of chat history and insert it in chatgpt prompt
