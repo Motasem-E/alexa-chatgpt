@@ -2,9 +2,7 @@
 
 ### 1- For installation, please follow [Installation.md](./Installation.md) instructions
 
-### 2- Billing: num_tokens(prompt) + max_tokens \* max(n, best_of)
-
-### 3- Features & Configurations:
+### 2- Features & Configurations:
 
 - Feature: Chat Languages in English and Portuguese
 
@@ -14,3 +12,7 @@
 - Configuration: Speaker selection in code
 
 - Configuration: limit chat history persistence
+
+### 3- CHATGPT Billing:
+
+- num_tokens(prompt) + max_tokens \* max(n, best_of)
